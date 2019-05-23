@@ -25,9 +25,10 @@ jobs:
           command: |
             case "${CIRCLE_BRANCH}" in
               master)
-                echo "Deploying..."
+                echo "## - Sync Content to Bucket S3"
+                aws s3 sync . s3://bucket-42.s3-website-us-east-1.amazonaws.com/ --delete
                 ;;
               *)
-                echo "Deploy not configured for ${CIRCLE_BRANCH}."
+                echo "## - Deploy not configured for ${CIRCLE_BRANCH}."
                 ;;
             esac          
