@@ -1,0 +1,33 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10.15.3
+    working_directory: ~/app
+    environment:
+      APP_VERSION: "$CIRCLE_SHA1"
+    steps:
+      - checkout
+      - run:
+          name: Node Version
+          command: node --version
+      - run:
+          name: Update Repository and Install Python
+          command: sudo apt-get update && sudo apt-get install python-dev python-pip
+      - run:
+          name: Install AWSCli
+          command: sudo pip install awscli
+      - run:
+          name: AWS Version
+          command: aws --version
+      - deploy:
+          name: Deploy to AWS Bucket S3
+          command: |
+            case "${CIRCLE_BRANCH}" in
+              master)
+                echo "Deploying..."
+                ;;
+              *)
+                echo "Deploy not configured for ${CIRCLE_BRANCH}."
+                ;;
+            esac          
